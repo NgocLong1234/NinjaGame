@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+      MONGO_INITDB_DATABASE: game_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      MONGO_URI: "mongodb://root:rootpass@mongo:27017/game_db?authSource=admin"
+    depends_on:
+      - mongo
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo_data:
